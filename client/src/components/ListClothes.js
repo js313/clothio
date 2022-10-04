@@ -8,12 +8,15 @@ import Avatar from '@mui/material/Avatar';
 import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import { Box, FormControl, IconButton, InputLabel, MenuItem, Paper, Select, Typography } from '@mui/material';
 import NewClothForm from './NewClothForm';
+import ClothDetail from './ClothDetail';
 
 function ListClothes() {
     const [clothes, setClothes] = useState([])
     const [paperElevation, setPaperElevation] = useState(5)
     const [clothType, setClothType] = useState('all')
     const [formModal, setFormModal] = useState(false)
+    const [detailModal, setDetailModal] = useState(false)
+
     useEffect(() => {
         if (clothes && clothes instanceof Array && clothes.length > 0) return
         (async () => {
@@ -83,6 +86,7 @@ function ListClothes() {
                             }
                             disablePadding
                             sx={{ mb: 1 }}
+                            onClick={() => setDetailModal(cloth.cloth_id)}
                         >
                             <ListItemButton>
                                 <ListItemAvatar>
@@ -92,6 +96,7 @@ function ListClothes() {
                             </ListItemButton>
                         </ListItem>
                     )}
+                    <ClothDetail detailModal={detailModal} setDetailModal={setDetailModal} />
                 </List>
             </Paper>
         </>

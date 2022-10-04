@@ -1,6 +1,8 @@
 .Format folder structure.
 .Data validation.
 ?Image upload functionality.
+?Passing id in detailModal state in details page, find a better implementation.
+Fix responsiveness of modals.
 
 Keep in mind 3 types of users for error handling: nefarious users, general users, developers.
 How to connect and query database without ORM.
