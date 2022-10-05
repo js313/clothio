@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import { Button, Grid, Paper } from '@mui/material'
 
-function ClothCount() {
-    // const [clothes, setClothes] = useState([])
+function ClothCount(props) {
     const [paperElevation, setPaperElevation] = useState(5)
+    const [counts, setCounts] = useState(undefined)
+
     useEffect(() => {
-        // if (clothes && clothes instanceof Array && clothes.length > 0) return
-        // (async () => {
-        //     const clothesList = await (await fetch('/clothes')).json()
-        //     setClothes(clothesList)
-        // })()
-    }, [])
+        if (counts instanceof Array && counts.length > 0) return
+        (async () => {
+            const res = await (await fetch('/clothes/count')).json()
+            setCounts(res)
+        })()
+    }, [counts])
 
     function mouseEnter() {
         setPaperElevation(10)
@@ -23,15 +24,24 @@ function ClothCount() {
         <Paper elevation={paperElevation} onMouseEnter={mouseEnter} onMouseLeave={mouseLeave}>
             <Grid container spacing={0}>
                 <Grid item xs={4} sx={{ textAlign: 'center' }}>
-                    <Button sx={{ pt: 2, pb: 2, width: '100%' }}><b>Washing: {3}</b></Button>
+                    <Button sx={{ pt: 2, pb: 2, pl: 1, pr: 1, width: '100%' }} variant={props.clothStatus === "washing" ? 'contained' : 'text'} onClick={() => props.setClothStatus((prevState) => {
+                        if (prevState === "washing") return ''
+                        return "washing"
+                    })}><b>Washing: {counts ? counts[0] : '?'}</b></Button>
                 </Grid>
                 <Grid item xs={4} sx={{ textAlign: 'center' }}>
-                    <Button sx={{ pt: 2, pb: 2, width: '100%' }}><b>Washed: {30}</b></Button>
+                    <Button sx={{ pt: 2, pb: 2, pl: 1, pr: 1, width: '100%' }} variant={props.clothStatus === "washed" ? 'contained' : 'text'} onClick={() => props.setClothStatus((prevState) => {
+                        if (prevState === "washed") return ''
+                        return "washed"
+                    })}> <b>Washed: {counts ? counts[1] : '?'}</b></Button>
                 </Grid>
                 <Grid item xs={4} sx={{ textAlign: 'center' }}>
-                    <Button sx={{ pt: 2, pb: 2, width: '100%' }}><b>Dirty: {3}</b></Button>
+                    <Button sx={{ pt: 2, pb: 2, pl: 1, pr: 1, width: '100%' }} variant={props.clothStatus === "dirty" ? 'contained' : 'text'} onClick={() => props.setClothStatus((prevState) => {
+                        if (prevState === "dirty") return ''
+                        return "dirty"
+                    })}> <b>Dirty: {counts ? counts[2] : '?'}</b></Button>
                 </Grid>
-            </Grid>
+            </Grid >
         </Paper >
     )
 }

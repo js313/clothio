@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -10,20 +10,22 @@ import { Box, FormControl, IconButton, InputLabel, MenuItem, Paper, Select, Typo
 import NewClothForm from './NewClothForm';
 import ClothDetail from './ClothDetail';
 
-function ListClothes() {
+function ListClothes(props) {
     const [clothes, setClothes] = useState([])
     const [paperElevation, setPaperElevation] = useState(5)
-    const [clothType, setClothType] = useState('all')
+    const [clothType, setClothType] = useState('')
     const [formModal, setFormModal] = useState(false)
-    const [detailModal, setDetailModal] = useState(false)
+    const [clothIdModal, setClothIdModal] = useState('')
+    const clothStatusRef = useRef() //to compare old and new values
 
     useEffect(() => {
-        if (clothes && clothes instanceof Array && clothes.length > 0) return
+        if ((clothes instanceof Array && clothes.length > 0) && (clothStatusRef.value === props.clothStatus)) return
         (async () => {
-            const clothesList = await (await fetch('/clothes')).json()
+            clothStatusRef.value = props.clothStatus
+            const clothesList = await (await fetch(`/clothes?type=${clothType}&status=${props.clothStatus}`)).json()
             setClothes(clothesList)
         })()
-    }, [clothes])
+    }, [clothes, clothType, props.clothStatus])
 
     function mouseEnter() {
         setPaperElevation(10)
@@ -44,12 +46,15 @@ function ListClothes() {
                     <Select
                         labelId="cloth-type-select-label"
                         id="cloth-type-select"
-                        value={clothType || 'all'}
+                        value={clothType || ''}
                         label="type"
-                        onChange={(value) => { setClothType(value.target.value) }}
+                        onChange={(value) => {
+                            setClothType(value.target.value)
+                            setClothes([])
+                        }}
                         sx={{ maxHeight: 50 }}
                     >
-                        <MenuItem value={'all'}>All</MenuItem>
+                        <MenuItem value={''}>All</MenuItem>
                         <MenuItem value={'tshirt'}>T-Shirts</MenuItem>
                         <MenuItem value={'pj'}>Pyajamas</MenuItem>
                         <MenuItem value={'shirt'}>Shirts</MenuItem>
@@ -86,9 +91,8 @@ function ListClothes() {
                             }
                             disablePadding
                             sx={{ mb: 1 }}
-                            onClick={() => setDetailModal(cloth.cloth_id)}
                         >
-                            <ListItemButton>
+                            <ListItemButton onClick={() => setClothIdModal(cloth.cloth_id)}>
                                 <ListItemAvatar>
                                     <Avatar src={cloth.image} />
                                 </ListItemAvatar>
@@ -96,7 +100,7 @@ function ListClothes() {
                             </ListItemButton>
                         </ListItem>
                     )}
-                    <ClothDetail detailModal={detailModal} setDetailModal={setDetailModal} />
+                    <ClothDetail clothId={clothIdModal} setClothIdModal={setClothIdModal} />
                 </List>
             </Paper>
         </>

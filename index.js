@@ -10,7 +10,6 @@ app.use(express.json())
 app.post('/clothes', async (req, res) => {
     try {
         const { name, description, date_given = null, date_came = null, image, type, status = "washed" } = req.body
-        console.log(req.body);
         const newCloth = await pool.query("INSERT INTO clothes(name, description, date_given, date_came, image, type, status) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *", [name, description, date_given, date_came, image, type, status])
         //the whole thing is just a postgres query even 'RETURNING *' "pg" module just populates the dollar values and connects DB.
         res.status(201).json(newCloth.rows[0])
@@ -22,8 +21,10 @@ app.post('/clothes', async (req, res) => {
 
 app.get('/clothes', async (req, res) => {
     try {
-        const { ob = 'status' } = req.query
-        const clothes = await pool.query(`SELECT * from clothes ORDER BY ${ob} ASC`)
+        const { ob = 'status', type, status } = req.query
+        const showWhere = type || status
+        const showAnd = type && status
+        const clothes = await pool.query(`SELECT * from clothes ${showWhere ? showAnd ? `WHERE type = '${type}' AND status = '${status}'` : type ? `WHERE type = '${type}'` : `WHERE status = '${status}'` : ''} ORDER BY ${ob} ASC`)
         res.status(200).json(clothes.rows)
     } catch (err) {
         console.log(err)
@@ -59,6 +60,20 @@ app.delete('/clothes/:cloth_id', async (req, res) => {
         const { cloth_id } = req.params
         const cloth = await pool.query(`DELETE FROM clothes WHERE cloth_id = ${cloth_id}`)
         res.status(204)
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({ error: "Internal server error" })
+    }
+})
+
+app.get('/clothes/count', async (req, res) => {
+    try {
+        const [washingCount, washedCount, dirtyCount] = await Promise.all([
+            pool.query("SELECT COUNT(*) FROM clothes WHERE status = 'washing'"),
+            pool.query("SELECT COUNT(*) FROM clothes WHERE status = 'washed'"),
+            pool.query("SELECT COUNT(*) FROM clothes WHERE status = 'dirty'")
+        ])
+        res.json(200).json({ washingCount, washedCount, dirtyCount })
     } catch (err) {
         console.log(err)
         res.status(500).json({ error: "Internal server error" })
