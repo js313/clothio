@@ -32,6 +32,16 @@ app.get('/clothes', async (req, res) => {
     }
 })
 
+app.get('/clothes/count', async (req, res) => {
+    try {
+        const count = await pool.query(`SELECT status, count(*) FROM clothes GROUP BY status`)
+        res.status(200).json(count.rows)
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({ error: "Internal server error" })
+    }
+})
+
 app.get('/clothes/:cloth_id', async (req, res) => {
     try {
         const { cloth_id } = req.params
@@ -66,18 +76,17 @@ app.delete('/clothes/:cloth_id', async (req, res) => {
     }
 })
 
-app.get('/clothes/count', async (req, res) => {
+app.patch('/clothes/:clothId/status', async (req, res) => {
     try {
-        const [washingCount, washedCount, dirtyCount] = await Promise.all([
-            pool.query("SELECT COUNT(*) FROM clothes WHERE status = 'washing'"),
-            pool.query("SELECT COUNT(*) FROM clothes WHERE status = 'washed'"),
-            pool.query("SELECT COUNT(*) FROM clothes WHERE status = 'dirty'")
-        ])
-        res.json(200).json({ washingCount, washedCount, dirtyCount })
+        const { status } = req.body
+        const { clothId } = req.params
+        const updatedCloth = await pool.query(`UPDATE clothes SET status = '${status}' WHERE cloth_id = ${clothId} RETURNING *`)
+        res.status(200).json(updatedCloth.rows[0])
     } catch (err) {
         console.log(err)
-        res.status(500).json({ error: "Internal server error" })
+        res.status(500).json({ error: err })
     }
+
 })
 
 const port = process.env.PORT || 3000

@@ -20,6 +20,7 @@ function NewClothForm(props) {
         })
         props.setFormModal(false)
         props.resetClothesList()
+        props.resetCount()
     }
 
     return (

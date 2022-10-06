@@ -36,6 +36,22 @@ function ListClothes(props) {
     function resetClothesList() {
         setClothes([])
     }
+    function resetCount() {
+        props.resetClothesCount()
+    }
+    async function handleStatusChange(clothId, newStatus) {
+        const data = await (await fetch(`/clothes/${clothId}/status`, {
+            method: 'PATCH',
+            body: JSON.stringify({ status: newStatus }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })).json()
+        if (data && data.cloth_id) {
+            resetClothesList()
+            resetCount()
+        }
+    }
 
     return (
         <>
@@ -48,8 +64,8 @@ function ListClothes(props) {
                         id="cloth-type-select"
                         value={clothType || ''}
                         label="type"
-                        onChange={(value) => {
-                            setClothType(value.target.value)
+                        onChange={(event) => {
+                            setClothType(event.target.value)
                             setClothes([])
                         }}
                         sx={{ maxHeight: 50 }}
@@ -65,7 +81,7 @@ function ListClothes(props) {
                     </Select>
                 </FormControl>
                 <IconButton color='primary' aria-label="add" onClick={() => setFormModal(true)}><AddRoundedIcon /></IconButton>
-                <NewClothForm formModal={formModal} setFormModal={setFormModal} resetClothesList={resetClothesList} />
+                <NewClothForm formModal={formModal} setFormModal={setFormModal} resetClothesList={resetClothesList} resetCount={resetCount} />
             </Box>
             <Paper elevation={paperElevation} onMouseEnter={mouseEnter} onMouseLeave={mouseLeave}>
                 <List dense sx={{ width: '100%', bgcolor: 'background.paper' }}>
@@ -78,11 +94,11 @@ function ListClothes(props) {
                                         variant='standard'
                                         labelId="cloth-status-select-label"
                                         id="cloth-status-select"
-                                        value={cloth.status || 0}
+                                        value={cloth.status || ''}
                                         label="Status"
-                                    // onChange={handleChange}
+                                        onChange={(event) => { handleStatusChange(cloth.cloth_id, event.target.value) }}
                                     >
-                                        <MenuItem value={0} disabled>Unknown</MenuItem>
+                                        <MenuItem value={''} disabled>Unknown</MenuItem>
                                         <MenuItem value={'washing'}>In washing</MenuItem>
                                         <MenuItem value={'washed'}>Washed</MenuItem>
                                         <MenuItem value={'dirty'}>Dirty</MenuItem>
