@@ -34,7 +34,7 @@ app.get('/clothes', async (req, res) => {
 
 app.get('/clothes/count', async (req, res) => {
     try {
-        const count = await pool.query(`SELECT status, count(*) FROM clothes GROUP BY status`)
+        const count = await pool.query(`SELECT status, COUNT(*) FROM clothes GROUP BY status`)
         res.status(200).json(count.rows)
     } catch (err) {
         console.log(err)
@@ -69,7 +69,7 @@ app.delete('/clothes/:cloth_id', async (req, res) => {
     try {
         const { cloth_id } = req.params
         const cloth = await pool.query(`DELETE FROM clothes WHERE cloth_id = ${cloth_id}`)
-        res.status(204)
+        res.status(204).json()
     } catch (err) {
         console.log(err)
         res.status(500).json({ error: "Internal server error" })

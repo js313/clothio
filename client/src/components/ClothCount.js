@@ -8,7 +8,7 @@ function ClothCount({ counts, setCounts, clothStatus, setClothStatus }) {
         if (counts instanceof Array && counts.length > 0) return
         (async () => {
             const data = await (await fetch('/clothes/count')).json()
-            const countsArray = ['?', '?', '?']
+            const countsArray = [0, 0, 0]
             try {
                 data.forEach(el => {
                     let index
@@ -38,19 +38,19 @@ function ClothCount({ counts, setCounts, clothStatus, setClothStatus }) {
                     <Button sx={{ pt: 2, pb: 2, pl: 1, pr: 1, width: '100%' }} variant={clothStatus === "washing" ? 'contained' : 'text'} onClick={() => setClothStatus((prevState) => {
                         if (prevState === "washing") return ''
                         return "washing"
-                    })}><b>Washing: {counts ? counts[0] : '?'}</b></Button>
+                    })}><b>Washing: {counts ? counts[0] : 0}</b></Button>
                 </Grid>
                 <Grid item xs={4} sx={{ textAlign: 'center' }}>
                     <Button sx={{ pt: 2, pb: 2, pl: 1, pr: 1, width: '100%' }} variant={clothStatus === "washed" ? 'contained' : 'text'} onClick={() => setClothStatus((prevState) => {
                         if (prevState === "washed") return ''
                         return "washed"
-                    })}> <b>Washed: {counts ? counts[1] : '?'}</b></Button>
+                    })}> <b>Washed: {counts ? counts[1] : 0}</b></Button>
                 </Grid>
                 <Grid item xs={4} sx={{ textAlign: 'center' }}>
                     <Button sx={{ pt: 2, pb: 2, pl: 1, pr: 1, width: '100%' }} variant={clothStatus === "dirty" ? 'contained' : 'text'} onClick={() => setClothStatus((prevState) => {
                         if (prevState === "dirty") return ''
                         return "dirty"
-                    })}> <b>Dirty: {counts ? counts[2] : '?'}</b></Button>
+                    })}> <b>Dirty: {counts ? counts[2] : 0}</b></Button>
                 </Grid>
             </Grid >
         </Paper >

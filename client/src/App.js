@@ -13,7 +13,7 @@ function App() {
   }
 
   return (
-    <Container maxWidth="xs" sx={{ pt: 2, pb: 2, mt: 5 }}>
+    <Container maxWidth="xs" sx={{ pb: 2, mt: 2 }}>
       <ClothCount clothStatus={clothStatus} setClothStatus={setClothStatus} counts={counts} setCounts={setCounts} />
       <ListClothes clothStatus={clothStatus} resetClothesCount={resetClothesCount} />
     </Container>
