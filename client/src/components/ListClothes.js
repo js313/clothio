@@ -39,8 +39,6 @@ function ListClothes(props) {
         // eslint-disable-next-line
     }, [props.clothStatus])
 
-    console.log("loop")
-
     function mouseEnter() {
         setPaperElevation(10)
     }

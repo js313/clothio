@@ -80,13 +80,23 @@ app.patch('/clothes/:clothId/status', async (req, res) => {
     try {
         const { status } = req.body
         const { clothId } = req.params
-        const updatedCloth = await pool.query(`UPDATE clothes SET status = '${status}' WHERE cloth_id = ${clothId} RETURNING *`)
+        let dateGiven = false, dateCame = false;
+        if (status === "washing") {
+            dateGiven = true
+        }
+        else if (status === "washed") {
+            dateCame = true
+        }
+        else {
+            const updatedCloth = await pool.query(`UPDATE clothes SET status = '${status}' WHERE cloth_id = ${clothId} RETURNING *`)
+            return res.status(200).json(updatedCloth.rows[0])
+        }
+        const updatedCloth = await pool.query(`UPDATE clothes SET status = '${status}', ${dateGiven ? 'date_given' : 'date_came'} = '${new Date().toLocaleString()}' WHERE cloth_id = ${clothId} RETURNING *`)
         res.status(200).json(updatedCloth.rows[0])
     } catch (err) {
         console.log(err)
         res.status(500).json({ error: err })
     }
-
 })
 
 const port = process.env.PORT || 3000

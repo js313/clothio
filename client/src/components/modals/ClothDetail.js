@@ -7,7 +7,18 @@ function ClothDetail(props) {
         if (!props.clothId) return
         (async () => {
             const response = await fetch(`/clothes/${props.clothId}`)
-            setClothData(await response.json())
+            const data = await response.json()
+            if (data.date_given) {
+                const dateGiven = new Date(data.date_given).toLocaleDateString()
+                const timeGiven = new Date(data.date_given).toLocaleTimeString()
+                data.date_given = dateGiven + ", " + timeGiven
+            }
+            if (data.date_came) {
+                const dateCame = new Date(data.date_came).toLocaleDateString()
+                const timeCame = new Date(data.date_came).toLocaleTimeString()
+                data.date_came = dateCame + ", " + timeCame
+            }
+            setClothData(data)
         })()
     }, [props.clothId])
     if (!clothData) return (<></>)
@@ -21,12 +32,12 @@ function ClothDetail(props) {
                 <Box sx={{ textAlign: 'center', mb: 2 }}>
                     <img src={clothData.image} alt={clothData.name} style={{ maxHeight: '40%', maxWidth: '100%' }} />
                 </Box>
-                <Typography color='gray' component='h1' variant='h6' sx={{ m: 1, mb: 1 }}>Name: <Typography color='black' component='span' variant='h6' sx={{ m: 1, mb: 1 }}>{clothData.name}</Typography></Typography>
-                <Typography color='gray' component='h1' variant='h6' sx={{ m: 1, mb: 1 }}>Detail: <Typography color='black' component='span' variant='h6' sx={{ m: 1, mb: 1 }}>{clothData.description}</Typography></Typography>
-                <Typography color='gray' component='h1' variant='h6' sx={{ m: 1, mb: 1 }}>Sent: <Typography color='black' component='span' variant='h6' sx={{ m: 1, mb: 1 }}>{clothData.date_given}</Typography></Typography>
-                <Typography color='gray' component='h1' variant='h6' sx={{ m: 1, mb: 1 }}>Came: <Typography color='black' component='span' variant='h6' sx={{ m: 1, mb: 1 }}>{clothData.date_came}</Typography></Typography>
-                <Typography color='gray' component='h1' variant='h6' sx={{ m: 1, mb: 1 }}>Type: <Typography color='black' component='span' variant='h6' sx={{ m: 1, mb: 1 }}>{clothData.type}</Typography></Typography>
-                <Typography color='gray' component='h1' variant='h6' sx={{ m: 1, mb: 1 }}>Status: <Typography color='black' component='span' variant='h6' sx={{ m: 1, mb: 1 }}>{clothData.status}</Typography></Typography>
+                <Typography color='gray' component='h1' variant='h6' sx={{ m: 1, mb: 1 }}>Name:<Typography color='black' component='span' variant='h6' fontSize={18} sx={{ m: 1, mb: 1 }}>{clothData.name}</Typography></Typography>
+                <Typography color='gray' component='h1' variant='h6' sx={{ m: 1, mb: 1 }}>Detail:<Typography color='black' component='span' variant='h6' fontSize={18} sx={{ m: 1, mb: 1 }}>{clothData.description}</Typography></Typography>
+                <Typography color='gray' component='h1' variant='h6' sx={{ m: 1, mb: 1 }}>Sent:<Typography color='black' component='span' variant='h6' fontSize={18} sx={{ m: 1, mb: 1 }}>{clothData.date_given}</Typography></Typography>
+                <Typography color='gray' component='h1' variant='h6' sx={{ m: 1, mb: 1 }}>Came:<Typography color='black' component='span' variant='h6' fontSize={18} sx={{ m: 1, mb: 1 }}>{clothData.date_came}</Typography></Typography>
+                <Typography color='gray' component='h1' variant='h6' sx={{ m: 1, mb: 1 }}>Type:<Typography color='black' component='span' variant='h6' fontSize={18} sx={{ m: 1, mb: 1 }}>{clothData.type}</Typography></Typography>
+                <Typography color='gray' component='h1' variant='h6' sx={{ m: 1, mb: 1 }}>Status:<Typography color='black' component='span' variant='h6' fontSize={18} sx={{ m: 1, mb: 1 }}>{clothData.status}</Typography></Typography>
             </Box>
         </Modal>
     )
