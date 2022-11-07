@@ -3,13 +3,16 @@ const cors = require('cors')
 require('dotenv').config({ path: './config.env' })
 const pool = require('./db')
 const app = express()
+const cloudinary = require('cloudinary').v2
 
 app.use(cors())
-app.use(express.json())
+app.use(express.json({ limit: '50mb' }))
 
 app.post('/clothes', async (req, res) => {
     try {
-        const { name, description, date_given = null, date_came = null, image, type, status = "washed" } = req.body
+        let { name, description, date_given = null, date_came = null, image, type, status = "washed" } = req.body
+        const response = await cloudinary.uploader.upload(image, { folder: 'Clothio' })
+        image = response.secure_url
         const newCloth = await pool.query("INSERT INTO clothes(name, description, date_given, date_came, image, type, status) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *", [name, description, date_given, date_came, image, type, status])
         //the whole thing is just a postgres query even 'RETURNING *' "pg" module just populates the dollar values and connects DB.
         res.status(201).json(newCloth.rows[0])

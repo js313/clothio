@@ -3,6 +3,18 @@ import React, { useState } from "react"
 
 function NewClothForm(props) {
     const [formType, setFormType] = useState('')
+    const [imageString, setImageString] = useState('')
+
+    async function imageToBase64(image) {
+        let reader = new FileReader()
+        reader.readAsDataURL(image)
+        reader.onload = function () {
+            setImageString(reader.result);
+        }
+        reader.onerror = function () {
+            throw new Error("Could not upload image")
+        }
+    }
 
     async function submitHandler(event) {
         event.preventDefault()
@@ -11,7 +23,7 @@ function NewClothForm(props) {
             body: JSON.stringify({
                 name: event.target.name.value,
                 description: event.target.description.value,
-                image: event.target.image.value,
+                image: imageString,
                 type: formType
             }),
             headers: {
@@ -31,7 +43,7 @@ function NewClothForm(props) {
             <Box component="form" sx={{ position: 'absolute', top: '10%', left: 0, right: 0, ml: 'auto', mr: 'auto', width: '24%', minWidth: 300, bgcolor: 'background.paper', borderRadius: 1, p: 3, pt: 2, pb: 2, display: 'flex', flexDirection: 'column' }} onSubmit={submitHandler}>
                 <Typography color='gray' component='h1' variant='h5' sx={{ m: 1, mb: 3 }}>Add a Cloth</Typography>
                 <TextField name="name" label="Name" variant="outlined" sx={{ mb: 3 }} />
-                <TextField name="image" label="Image URL" variant="outlined" sx={{ mb: 3 }} />
+                <Button component="label" variant="contained" sx={{ mb: 3 }} >Upload Image {imageString ? '✓' : ''}<input type="file" name="clothImage" onChange={(event) => { imageToBase64(event.target.files[0]) }} hidden></input></Button>
                 <TextField name="description" label="Description" variant="outlined" sx={{ mb: 3 }} multiline />
                 <FormControl fullWidth sx={{ mb: 3 }}>
                     <InputLabel id="cloth-type-select-label">Type</InputLabel>
