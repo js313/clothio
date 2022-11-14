@@ -5,6 +5,9 @@ const pool = require('./db')
 const app = express()
 const cloudinary = require('cloudinary').v2
 
+// only when ready to deploy
+// app.use(express.static(path.resolve(__dirname, './client/build')))
+
 app.use(cors())
 app.use(express.json({ limit: '50mb' }))
 
