@@ -12,7 +12,7 @@ app.post('/clothes', async (req, res) => {
     try {
         let { name, description, date_given = null, date_came = null, image, type, status = "washed" } = req.body
         const response = await cloudinary.uploader.upload(image, { folder: 'Clothio' })
-        image = response.secure_url
+        image = response.secure_url + `?public_id=${response.public_id}`
         const newCloth = await pool.query("INSERT INTO clothes(name, description, date_given, date_came, image, type, status) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *", [name, description, date_given, date_came, image, type, status])
         //the whole thing is just a postgres query even 'RETURNING *' "pg" module just populates the dollar values and connects DB.
         res.status(201).json(newCloth.rows[0])
@@ -71,7 +71,9 @@ app.put('/clothes/:cloth_id', async (req, res) => {
 app.delete('/clothes/:cloth_id', async (req, res) => {
     try {
         const { cloth_id } = req.params
-        const cloth = await pool.query(`DELETE FROM clothes WHERE cloth_id = ${cloth_id}`)
+        console.log("sdigub")
+        const cloth = await pool.query(`DELETE FROM clothes WHERE cloth_id = ${cloth_id} RETURNING *`)
+        await cloudinary.uploader.destroy(cloth.rows[0].image.split('?public_id')[1])
         res.status(204).json()
     } catch (err) {
         console.log(err)

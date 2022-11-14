@@ -6,7 +6,7 @@ import ListClothes from './components/ListClothes';
 import { Cloudinary } from "@cloudinary/url-gen";
 
 function App() {
-  const cld = new Cloudinary({
+  new Cloudinary({
     cloud: {
       cloudName: 'dixj9zn09'
     }
