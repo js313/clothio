@@ -65,8 +65,15 @@ app.get('/clothes/:cloth_id', async (req, res) => {
 app.put('/clothes/:cloth_id', async (req, res) => {
     try {
         const { cloth_id } = req.params
-        const { name, description, date_given, date_came, image, type, status } = req.body
-        const cloth = await pool.query(`UPDATE clothes SET name = $1, description = $2, date_given = $3, date_came = $4, image = $5, type = $6, status = $7 WHERE cloth_id = $8 RETURNING *`, [name, description, date_given, date_came, image, type, status, cloth_id])
+        let { name, image, description, type } = req.body
+        const oldClothData = await pool.query('SELECT image FROM clothes WHERE cloth_id = $1', [cloth_id])
+        if (image && !image.includes('cloudinary')) {
+            const response = await cloudinary.uploader.upload(image, { folder: 'Clothio' })
+            image = response.secure_url + `?public_id=${response.public_id}`
+            cloudinary.uploader.destroy(oldClothData.rows[0].image.split('?public_id=')[1])
+        }
+        const cloth = await pool.query(`UPDATE clothes SET name = $1, description = $2, image = $3, type = $4 WHERE cloth_id = $5 RETURNING *`, [name, description, image, type, cloth_id])
+
         res.status(200).json(cloth.rows)
     } catch (err) {
         console.log(err)
@@ -77,9 +84,8 @@ app.put('/clothes/:cloth_id', async (req, res) => {
 app.delete('/clothes/:cloth_id', async (req, res) => {
     try {
         const { cloth_id } = req.params
-        console.log("sdigub")
         const cloth = await pool.query(`DELETE FROM clothes WHERE cloth_id = ${cloth_id} RETURNING *`)
-        await cloudinary.uploader.destroy(cloth.rows[0].image.split('?public_id')[1])
+        await cloudinary.uploader.destroy(cloth.rows[0].image.split('?public_id=')[1])
         res.status(204).json()
     } catch (err) {
         console.log(err)

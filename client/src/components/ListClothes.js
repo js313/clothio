@@ -133,7 +133,7 @@ function ListClothes(props) {
                     }
                     <ClothDetail clothId={clothIdModal} setClothIdModal={setClothIdModal} />
                     <ConfirmDelete deleteModal={deleteModal} setDeleteModal={setDeleteModal} resetClothesList={resetClothesList} />
-                    <EditModal editModal={editModal} setEditModal={setEditModal} />
+                    <EditModal editModal={editModal} setEditModal={setEditModal} resetClothesList={resetClothesList} />
                 </List>
             </Paper>
         </>
