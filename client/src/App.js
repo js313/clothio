@@ -3,16 +3,10 @@ import { useState } from 'react';
 import './App.css';
 import ClothCount from './components/ClothCount';
 import ListClothes from './components/ListClothes';
-import { Cloudinary } from "@cloudinary/url-gen";
 
 function App() {
-  new Cloudinary({
-    cloud: {
-      cloudName: 'dixj9zn09'
-    }
-  })
 
-  const [clothStatus, setClothStatus] = useState('')
+  const [clothStatus, setClothStatus] = useState('washing')
   const [counts, setCounts] = useState(undefined)
 
   function resetClothesCount() {

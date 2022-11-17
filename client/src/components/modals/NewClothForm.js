@@ -30,15 +30,21 @@ function NewClothForm(props) {
                 'Content-Type': 'application/json'
             },
         })
-        props.setFormModal(false)
         props.resetClothesList()
         props.resetClothesCount()
+        setFormType('')
+        setImageString('')
+        props.setFormModal(false)
     }
 
     return (
         <Modal
             open={props.formModal}
-            onClose={() => props.setFormModal(false)}
+            onClose={() => {
+                props.setFormModal(false)
+                setImageString('')
+                setFormType('')
+            }}
         >
             <Box component="form" sx={{ position: 'absolute', top: '10%', left: 0, right: 0, ml: 'auto', mr: 'auto', width: '24%', minWidth: 300, bgcolor: 'background.paper', borderRadius: 1, p: 3, pt: 2, pb: 2, display: 'flex', flexDirection: 'column' }} onSubmit={submitHandler}>
                 <Typography color='gray' component='h1' variant='h5' sx={{ m: 1, mb: 3 }}>Add a Cloth</Typography>
