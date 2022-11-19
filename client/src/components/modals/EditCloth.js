@@ -1,4 +1,5 @@
 import { Box, Button, FormControl, InputLabel, MenuItem, Modal, Select, TextField, Typography } from "@mui/material"
+import imageCompression from 'browser-image-compression'
 import React, { useEffect, useState } from "react"
 
 function EditCloth(props) {
@@ -18,8 +19,13 @@ function EditCloth(props) {
     }, [clothDetail, props.editModal])
 
     async function imageToBase64(image) {
+        const compressedImage = await imageCompression(image, {
+            maxSizeMB: 0.15,
+            maxWidthOrHeight: 1920,
+            useWebWorker: true
+        })
         let reader = new FileReader()
-        reader.readAsDataURL(image)
+        reader.readAsDataURL(compressedImage)
         reader.onload = function () {
             setImageString(reader.result);
         }
