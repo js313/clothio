@@ -11,7 +11,7 @@
     "client": "npm start --prefix client",
     "start:dev": "concurrently --kill-others-on-fail \"npm run startserv:dev\" \" npm run client\"",
     "start:prod": "concurrently --kill-others-on-fail \"npm run startserv:prod\" \" npm run client\"",
-    "start": "npm run startserv:prod"
+    "start": "node index.js"
   },
   "keywords": [],
   "author": "",
