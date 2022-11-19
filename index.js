@@ -7,7 +7,7 @@ const cloudinary = require('cloudinary').v2
 const path = require('path')
 
 // only when ready to deploy
-if (process.env.NODE_END === "production")
+if (process.env.NODE_ENV === "production")
     app.use(express.static(path.resolve(__dirname, './client/build')))
 
 app.use(cors())
