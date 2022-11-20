@@ -32,7 +32,7 @@ function ClothCount({ counts, setCounts, clothStatus, setClothStatus }) {
     }
 
     return (
-        <Paper elevation={paperElevation} onMouseEnter={mouseEnter} onMouseLeave={mouseLeave}>
+        <Paper elevation={paperElevation} onMouseEnter={mouseEnter} onMouseLeave={mouseLeave} sx={{ backgroundColor: '#202124', color: '#D6D6D7' }}>
             <Grid container spacing={0}>
                 <Grid item xs={4} sx={{ textAlign: 'center' }}>
                     <Button sx={{ pt: 2, pb: 2, pl: 1, pr: 1, width: '100%' }} variant={clothStatus === "washing" ? 'contained' : 'text'} onClick={() => setClothStatus((prevState) => {

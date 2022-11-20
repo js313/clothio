@@ -69,7 +69,7 @@ function ListClothes(props) {
         <>
             <Box justifyContent='space-between' alignItems='center' sx={{ display: 'flex', pt: 3, pb: 3 }}>
                 <FormControl fullWidth sx={{ maxWidth: 145 }}>
-                    <InputLabel id="cloth-type-select-label">Type</InputLabel>
+                    <InputLabel id="cloth-type-select-label" sx={{ color: '#D6D6D7' }}>Type</InputLabel>
                     <Select
                         labelId="cloth-type-select-label"
                         id="cloth-type-select"
@@ -79,7 +79,7 @@ function ListClothes(props) {
                             setClothType(event.target.value)
                             setClothes([])
                         }}
-                        sx={{ maxHeight: 50 }}
+                        sx={{ maxHeight: 50, backgroundColor: '#202124', color: '#D6D6D7' }}
                     >
                         <MenuItem value={''}>All</MenuItem>
                         <MenuItem value={'tshirt'}>T-Shirts</MenuItem>
@@ -96,8 +96,8 @@ function ListClothes(props) {
                 <IconButton color='error' aria-label="delete" onClick={() => setListMode((prevState) => prevState === 2 ? 0 : 2)}><DeleteRoundedIcon /></IconButton>
                 <NewClothForm formModal={formModal} setFormModal={setFormModal} resetClothesList={resetClothesList} resetClothesCount={resetClothesCount} />
             </Box>
-            <Paper elevation={paperElevation} onMouseEnter={mouseEnter} onMouseLeave={mouseLeave}>
-                <List dense sx={{ width: '100%', bgcolor: 'background.paper' }}>
+            <Paper elevation={paperElevation} onMouseEnter={mouseEnter} onMouseLeave={mouseLeave} style={{ backgroundColor: '#202124' }}>
+                <List dense sx={{ width: '100%', bgcolor: '#202124', color: '#D6D6D7' }}>
                     {clothes && clothes.length > 0 ? clothes.map(cloth =>
                         <ListItem
                             key={cloth.cloth_id}
@@ -109,6 +109,7 @@ function ListClothes(props) {
                                         id="cloth-status-select"
                                         value={cloth.status || ''}
                                         label="Status"
+                                        sx={{ backgroundColor: '#202124', color: '#D6D6D7' }}
                                         onChange={(event) => { handleStatusChange(cloth.cloth_id, event.target.value) }}
                                     >
                                         <MenuItem value={''} disabled>Unknown</MenuItem>
