@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, InputLabel, MenuItem, Modal, Select, TextField, Typography } from "@mui/material"
+import { Box, Button, FormControl, InputLabel, MenuItem, Modal, Select, TextField, Typography, LinearProgress } from "@mui/material"
 import imageCompression from 'browser-image-compression'
 import React, { useEffect, useState } from "react"
 
@@ -6,6 +6,7 @@ function EditCloth(props) {
     const [formType, setFormType] = useState('')
     const [imageString, setImageString] = useState('')
     const [clothDetail, setClothDetail] = useState(undefined)
+    const [showLoader, setShowLoader] = useState(false)
 
     useEffect(() => {
         if (!clothDetail && props.editModal) {
@@ -35,6 +36,7 @@ function EditCloth(props) {
     }
 
     async function submitHandler(event) {
+        setShowLoader(true)
         event.preventDefault()
         await fetch(`/clothes/${props.editModal}`, {
             method: 'PUT',
@@ -48,6 +50,7 @@ function EditCloth(props) {
                 'Content-Type': 'application/json'
             },
         })
+        setShowLoader(false)
         props.setEditModal(false)
         props.resetClothesList()
     }
@@ -98,7 +101,8 @@ function EditCloth(props) {
                         <MenuItem value={'pillowcover'}>Pillow Cover</MenuItem>
                     </Select>
                 </FormControl>
-                <Button type='submit' variant='contained' sx={{ mb: 3 }}>Update</Button>
+                <LinearProgress sx={{ display: showLoader ? 'block' : 'none' }} />
+                <Button type='submit' variant='contained' sx={{ mb: 3, borderTopLeftRadius: showLoader ? 0 : 4, borderTopRightRadius: showLoader ? 0 : 4 }}>Update</Button>
             </Box>
         </Modal>
     )

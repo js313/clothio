@@ -1,10 +1,11 @@
-import { Box, Button, FormControl, InputLabel, MenuItem, Modal, Select, TextField, Typography } from "@mui/material"
+import { Box, Button, FormControl, InputLabel, LinearProgress, MenuItem, Modal, Select, TextField, Typography } from "@mui/material"
 import imageCompression from 'browser-image-compression'
 import React, { useState } from "react"
 
 function NewClothForm(props) {
     const [formType, setFormType] = useState('')
     const [imageString, setImageString] = useState('')
+    const [showLoader, setShowLoader] = useState(false)
 
     async function imageToBase64(image) {
         const compressedImage = await imageCompression(image, {
@@ -23,6 +24,7 @@ function NewClothForm(props) {
     }
 
     async function submitHandler(event) {
+        setShowLoader(true)
         event.preventDefault()
         await fetch('/clothes', {
             method: 'POST',
@@ -36,6 +38,7 @@ function NewClothForm(props) {
                 'Content-Type': 'application/json'
             },
         })
+        setShowLoader(false)
         props.resetClothesList()
         props.resetClothesCount()
         setFormType('')
@@ -84,7 +87,8 @@ function NewClothForm(props) {
                         <MenuItem value={'pillowcover'}>Pillow Cover</MenuItem>
                     </Select>
                 </FormControl>
-                <Button type='submit' variant='contained' sx={{ mb: 3 }}>Submit</Button>
+                <LinearProgress sx={{ display: showLoader ? 'block' : 'none' }} />
+                <Button type='submit' variant='contained' sx={{ mb: 3, borderTopLeftRadius: showLoader ? 0 : 4, borderTopRightRadius: showLoader ? 0 : 4 }}>Submit</Button>
             </Box>
         </Modal>
     )
